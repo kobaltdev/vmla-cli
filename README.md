@@ -1,2 +1,2 @@
 # vmla-cli
-A CLI VMware log extractor and analyser
+CLI VMware log extractor and analyser
