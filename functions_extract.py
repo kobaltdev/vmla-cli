@@ -66,8 +66,8 @@ extraction_dir = "/home/coffee/vmla-cli/extracted_files"
 
 rm_directory("./extracted_files/")
 
-# unzip_one_file(zip_file_vcenter, extraction_dir)
+unzip_one_file(zip_file_vcenter, extraction_dir)
 
-# untar_one_file(tar_file_vcenter, extraction_dir)
+untar_one_file(tar_file_vcenter, extraction_dir)
 
-# parse_all_subdirs_and_extract(extraction_dir)
+parse_all_subdirs_and_extract(extraction_dir)
