@@ -44,30 +44,22 @@ def ungzip_one_file(gzipfile_to_extract: str, keep_original_file = "yes"):
         print("Error :", e)
 
 
-def parse_all_subdirs_and_extract(directory: str):
+def parse_all_subdirs_and_extract(directory: str, keep_original_file = "yes"):
     extensions_to_extract = ["*.gz", "*.tar", "*.zip"]
+    
 
     for path, subdirs, files in os.walk(directory):
         for name in files:
             if fnmatch(name, extensions_to_extract[0]):
-                ungzip_one_file((os.path.join(path, name)), keep_original_file="yes")
+                ungzip_one_file((os.path.join(path, name)), keep_original_file=keep_original_file)
             if fnmatch(name, extensions_to_extract[1]):
-                untar_one_file((os.path.join(path, name)), target_dir=path, keep_original_file="yes")
+                untar_one_file((os.path.join(path, name)), target_dir=path, keep_original_file=keep_original_file)
             if fnmatch(name, extensions_to_extract[2]):
-                unzip_one_file((os.path.join(path, name)), target_dir=path, keep_original_file="yes")
+                unzip_one_file((os.path.join(path, name)), target_dir=path, keep_original_file=keep_original_file)
 
+    for e in extensions_to_extract:
+        for path, subdirs, files in os.walk(directory):
+            for name in files:
+                if fnmatch(name, e):
+                    parse_all_subdirs_and_extract(directory, keep_original_file)
 
-
-zip_file_esxi = "/home/coffee/vmla-cli/source_files/VMware-vCenter-support-2024-08-08@18-19-48.zip"
-zip_file_vcenter = "/home/coffee/vmla-cli/source_files/VMware-vCenter-support-2024-08-09@12-09-50.zip"
-tar_file_esxi = "/home/coffee/vmla-cli/extracted_files/172.16.108.52-vm2024-8-08@18-19-48.tgz"
-tar_file_vcenter = "/home/coffee/vmla-cli/extracted_files/pcc-145-239-249-63.ovh.uk-vcsupport2024-9-08@12-18-52.tgz"
-extraction_dir = "/home/coffee/vmla-cli/extracted_files"
-
-rm_directory("./extracted_files/")
-
-unzip_one_file(zip_file_vcenter, extraction_dir)
-
-untar_one_file(tar_file_vcenter, extraction_dir)
-
-parse_all_subdirs_and_extract(extraction_dir)
