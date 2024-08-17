@@ -1,6 +1,5 @@
 import os
 import shutil
-from simple_term_menu import TerminalMenu
 import time
 
 
@@ -45,16 +44,13 @@ def ls_and_return_files_abs_format(directory: str) -> list:
             file_list.append(os.path.abspath(os.path.join(dirpath, f)))
     return file_list
 
-    # for f in ls_files:
-    #     size_in_mb = round((os.stat(os.path.join(directory, f)).st_size)/(1024*1024), 0)
-    #     print(f"{f}  /  size : {size_in_mb} MB")
-
 
 def print_menu_and_return_choice(title: str, menu_entries: list):
     options = menu_entries
     terminal_menu = TerminalMenu(options, title=title)
     menu_entry_index = terminal_menu.show()
     return options[menu_entry_index]
+
 
 def invalid_input():
     print("Please enter a valid input !")
