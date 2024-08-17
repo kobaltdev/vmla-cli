@@ -21,11 +21,21 @@ def unzip_one_file(zipfile_to_extract: str, target_dir = ".", keep_original_file
 
 
 def untar_one_file(tarfile_to_extract: str, target_dir = ".", keep_original_file = "yes"):
-
+    windows_tar_command = f"tar -xvzf {tarfile_to_extract} -C {target_dir}"
     try:
         with tarfile.open(tarfile_to_extract, 'r') as f:
-            f.extractall(target_dir)
-            print(f"Extracted : {f.name}")
+            if os.name=='nt':
+                try:
+                    os.popen(windows_tar_command)
+                except Exception as e:
+                    print(e)
+            else:
+                try:
+                    f.extractall(target_dir)
+                    print(f"Extracted : {f.name}")
+                except Exception as e:
+                    print(e)
+                    input("Press Enter")
             if keep_original_file == "no":
                 os.remove(tarfile_to_extract)
     except Exception as e:

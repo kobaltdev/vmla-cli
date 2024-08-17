@@ -21,12 +21,11 @@ def fix_perm(directory_to_fix: str):
 def rm_directory(dir_to_empty: str, first_try: bool):
     path = os.path.dirname(__file__)
     dir_to_rm = os.path.join(path, dir_to_empty)
-    print("Deleting :", dir_to_rm)
+    print("Trying to delete :", dir_to_rm, "\n")
     if os.path.exists(dir_to_rm) and os.path.isdir(dir_to_rm):
         try:
             shutil.rmtree(dir_to_rm)
-            print("Deleted :", dir_to_rm)
-            print("\nDeletion is successful !")
+            print("Deletion is successful !\n")
             time.sleep(2)
         except PermissionError:
             if first_try:
