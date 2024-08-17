@@ -15,7 +15,7 @@ def main_menu(source_directory: str, extraction_directory: str) -> str:
             cls()
             extract_menu(source_directory=source_directory, extraction_directory=extraction_directory)
         case "2":
-            rm_directory(extraction_directory)
+            rm_directory(extraction_directory, first_try=True)
         case "3":
             pass
         case "q":

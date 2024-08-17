@@ -1,13 +1,24 @@
 import os
 import shutil
 import time
+import stat
 
 
 def cls():
     os.system('cls' if os.name=='nt' else 'clear')
 
 
-def rm_directory(dir_to_empty: str):
+def fix_perm(directory_to_fix: str):
+    for root, dirs, files in os.walk(directory_to_fix):
+        for d in dirs:
+            # recursively fix directories
+            os.chmod(os.path.join(root, d), stat.S_IWUSR)
+        for f in files:
+            # recursively fix files
+            os.chmod(os.path.join(root, f), stat.S_IWUSR)
+    
+
+def rm_directory(dir_to_empty: str, first_try: bool):
     path = os.path.dirname(__file__)
     dir_to_rm = os.path.join(path, dir_to_empty)
     print("Deleting :", dir_to_rm)
@@ -15,11 +26,17 @@ def rm_directory(dir_to_empty: str):
         try:
             shutil.rmtree(dir_to_rm)
             print("Deleted :", dir_to_rm)
+            print("\nDeletion is successful !")
+            time.sleep(2)
+        except PermissionError:
+            if first_try:
+                fix_perm(directory_to_fix=dir_to_empty)
+                rm_directory(dir_to_empty=dir_to_empty, first_try=False)
         except Exception as e:
             print(e)
     else:
         print("No action performed : the directory does not exist or is empty.\n")
-    input("Press enter to continue ...")
+        input("Press enter to continue ...")
 
 
 def get_one_directory_absolute_path(directory_name: str) -> str:
@@ -45,14 +62,6 @@ def ls_and_return_files_abs_format(directory: str) -> list:
     return file_list
 
 
-def print_menu_and_return_choice(title: str, menu_entries: list):
-    options = menu_entries
-    terminal_menu = TerminalMenu(options, title=title)
-    menu_entry_index = terminal_menu.show()
-    return options[menu_entry_index]
-
-
 def invalid_input():
     print("Please enter a valid input !")
     time.sleep(1)
-
