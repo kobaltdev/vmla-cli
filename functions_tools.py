@@ -1,7 +1,13 @@
+from env_and_queries import *
+
+from datetime import datetime
+
 import os
 import shutil
 import time
 import stat
+import json
+
 
 
 def cls():
@@ -16,7 +22,7 @@ def fix_perm(directory_to_fix: str):
         for f in files:
             # recursively fix files
             os.chmod(os.path.join(root, f), stat.S_IWUSR)
-    
+
 
 def rm_directory(dir_to_empty: str, first_try: bool):
     path = os.path.dirname(__file__)
@@ -46,9 +52,9 @@ def get_one_directory_absolute_path(directory_name: str) -> str:
 
 
 def get_one_file_absolute_path(filename: str):
-    # Path du dossier de travail
+    # get the CWD
     directory = os.path.dirname(__file__)
-    # contruction du chemin de fichier complet
+    # build the abs path
     file_to_compute = os.path.join(directory, filename)
     return file_to_compute
 
@@ -61,6 +67,53 @@ def ls_and_return_files_abs_format(directory: str) -> list:
     return file_list
 
 
+def ls_dir_current_folder(base_directory: str) -> list:
+    dir_only = [f for f in os.listdir(base_directory) if os.path.isdir(os.path.join(base_directory, f))]
+    return dir_only
+
+
+def delete_files_by_type(directory: str, file_extension: str) -> None:
+    dir_content = os.listdir(directory)
+    for c in dir_content:
+        if c.endswith(file_extension):
+            os.remove(os.path.join(directory, c))
+
+
+def check_bundle_type_and_return_log_path(directory_to_check: str) -> str:
+    esxi_specific_mark = "altbootbank"
+    dir_to_check_relative_path = f"{extraction_dir}/{directory_to_check}"
+    full_dir_path = get_one_directory_absolute_path(dir_to_check_relative_path)
+    folders_in_bundle = ls_dir_current_folder(full_dir_path)
+    if esxi_specific_mark in folders_in_bundle:
+        return "esxi"
+    else:
+        return "vcenter"
+
+
+def build_var_log_location_and_return_path(directory: str, bundle_type: str) -> str:
+    bundle_relative_path = f"{extraction_dir}/{directory}"
+    full_dir_path = get_one_directory_absolute_path(bundle_relative_path)
+    if bundle_type == "esxi":
+        log_dir = f"{full_dir_path}/var"
+        return log_dir
+    else:
+        log_dir = f"{full_dir_path}/var/log"
+        return log_dir
+    
+
+
+def export_dict_to_json(dict_to_export: str, base_folder: str, save_location: str) -> str:
+    splitted_folder_name = base_folder.split(".")
+    t = datetime.now()
+    output_file_name = (f"{splitted_folder_name[0]}_generated_at_{t.hour}_{t.minute}_{t.second}.json")
+    export_path_name = os.path.join(save_location, output_file_name)
+    
+    with open(export_path_name, 'w') as outfile :
+        json.dump(dict_to_export, outfile)
+    return export_path_name
+
+
 def invalid_input():
     print("Please enter a valid input !")
     time.sleep(1)
+
