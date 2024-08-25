@@ -79,6 +79,15 @@ def delete_files_by_type(directory: str, file_extension: str) -> None:
             os.remove(os.path.join(directory, c))
 
 
+def create_required_folders_if_needed(base_directory: str) -> None:
+    required_folders = [source_dir, extraction_dir, reports_dir]
+
+    current_folders = ls_dir_current_folder(base_directory=base_directory)
+    for f in required_folders:
+        if f not in current_folders:
+            os.mkdir(os.path.join(base_directory, f))
+
+
 def check_bundle_type_and_return_log_path(directory_to_check: str) -> str:
     esxi_specific_mark = "altbootbank"
     dir_to_check_relative_path = f"{extraction_dir}/{directory_to_check}"

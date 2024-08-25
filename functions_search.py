@@ -40,7 +40,7 @@ def find_in_one_compressed_file(file_name: str, expression: str) -> list:
 
 def search_expression_in_files(root_directory: str, search_type: str) -> dict:
     if search_type == "esxi":
-        expressions_type = host_expressions
+        expressions_type = esxi_hardware
     else:
         expressions_type = vcenter_expressions
 
@@ -66,7 +66,3 @@ def search_expression_in_files(root_directory: str, search_type: str) -> dict:
                 
             results_all_expressions[e] = results_all_files
     return results_all_expressions
-
-
-# with open("test.json", 'w') as outfile:
-#     json.dump(exp, outfile, indent=4)

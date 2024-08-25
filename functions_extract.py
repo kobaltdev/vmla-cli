@@ -12,7 +12,6 @@ def unzip_one_file(zipfile_to_extract: str, target_dir = ".", keep_original_file
             f.extractall(target_dir)
             extracted_file = f.filelist[0].filename
             extracted_file_abs_path = f"{target_dir}/{extracted_file}"
-            # print(f"Extracted : {extracted_file_abs_path}")
             if keep_original_file == "no":
                 os.remove(zipfile_to_extract)
     except Exception as e:

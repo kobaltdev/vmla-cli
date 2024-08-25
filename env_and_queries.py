@@ -5,11 +5,16 @@ reports_dir = "reports"
 
 
 # SEARCH EXPRESSIONS
-host_expressions = ["shutdown",
-                    "Failed to resolve localhost IP address",
-                    "Unable to stat VM config file",
-                    "LoadFromConfig translated error to vim.fault.FileNotFound",
-                    "Host has booted"]
+esxi_hardware = ["shutdown",
+                "Host has booted",
+                "Host is rebooting",
+                "Exception Type",
+                "VeeamProxyOVH1",
+                "Hardware errors",
+                "Lost network connectivity on virtual switch",
+                "esx.problem",
+                "smartd:"
+                ]
 
 vcenter_expressions = ["testlog",
                        "srvtest_ansible"]

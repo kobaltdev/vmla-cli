@@ -4,6 +4,7 @@ from functions_search import *
 
 
 def main_menu(source_directory: str, extraction_directory: str) -> str:
+    create_required_folders_if_needed(base_directory=(os.path.join(os.getcwd())))
     cls()
     print("** Welcome to vmla-cli, a VMware log extractor and analyser **\n")
     print("1 - Extract a log bundle")
@@ -114,14 +115,14 @@ def search_menu(source_directory: str, extraction_directory: str) -> None:
         search_menu(source_directory, extraction_directory)
     search_type = check_bundle_type_and_return_log_path(directory_to_check=extracted_folder[file_index])
     varlog = build_var_log_location_and_return_path(directory=extracted_folder[file_index], bundle_type=search_type)
-    print(f"Ok, beginning search for this {search_type} bundle...\n")
+    print(f"\nOk, beginning search for this {search_type} bundle...\n")
     search_results = search_expression_in_files(root_directory=varlog, search_type=search_type)
     reports_dir_location = get_one_directory_absolute_path(directory_name=reports_dir)
     try:
         json_file = export_dict_to_json(dict_to_export=search_results,
                             base_folder=extracted_folder[file_index],
                             save_location=reports_dir_location)
-        print("Search results successfully exported as :", json_file)
+        print("\nSearch results successfully exported as :", json_file)
         input("\nPress Enter to continue ...")
     except Exception as e:
         print("Error while generating the JSON export :", e)
