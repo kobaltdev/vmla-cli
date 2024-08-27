@@ -183,7 +183,7 @@ def choose_custom_expression_set_menu() -> list:
         cls()
         print("There is no custom .txt expression file in the /custom_searches folder\n")
         input("Press Enter to continue ...")
-        search_menu2()
+        main_menu()
     print("\n Choose a custom expressions file to use :\n")
     for c in available_custom_files:
         print(f"{n} - {c}")
