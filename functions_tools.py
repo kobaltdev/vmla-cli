@@ -80,7 +80,7 @@ def delete_files_by_type(directory: str, file_extension: str) -> None:
 
 
 def create_required_folders_if_needed(base_directory: str) -> None:
-    required_folders = [source_dir, extraction_dir, reports_dir]
+    required_folders = [source_dir, extraction_dir, reports_dir, custom_dir]
 
     current_folders = ls_dir_current_folder(base_directory=base_directory)
     for f in required_folders:
@@ -110,7 +110,6 @@ def build_var_log_location_and_return_path(directory: str, bundle_type: str) -> 
         return log_dir
     
 
-
 def export_dict_to_json(dict_to_export: str, base_folder: str, save_location: str) -> str:
     splitted_folder_name = base_folder.split(".")
     t = datetime.now()
@@ -120,6 +119,20 @@ def export_dict_to_json(dict_to_export: str, base_folder: str, save_location: st
     with open(export_path_name, 'w') as outfile :
         json.dump(dict_to_export, outfile)
     return export_path_name
+
+
+def get_infos_from_txt(txt_file: str) -> list:
+    custom_expressions = []
+    try:
+        with open(txt_file, 'r') as input_file:
+            content = input_file.readlines()
+    except Exception as e:
+        print(e)
+    for line in content:
+        if len(line) > 0:
+            linea = line.rstrip()
+            custom_expressions.append(linea)
+    return custom_expressions
 
 
 def invalid_input():
