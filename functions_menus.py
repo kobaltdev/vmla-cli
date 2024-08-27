@@ -16,8 +16,8 @@ def main_menu() -> None:
     print("4 - Clear the /reports folder")
     print("5 - Switch verbose mode (extraction + search)\n")
     print("Q - Quit\n")
-    answer = input("Your choice ? : ").lower()
-    match answer:
+    answer_main_action = input("Your choice ? : ").lower()
+    match answer_main_action:
         case "1":
             cls()
             extract_menu()
@@ -29,6 +29,7 @@ def main_menu() -> None:
             search_menu(verbose_mode=verbose_mode)
         case "4":
             rm_directory(dir_to_empty=reports_dir, first_try=True)
+            main_menu()
         case "5":
             if verbose_mode == False:
                 print("\nVerbose mode enabled")
@@ -55,7 +56,7 @@ def extract_menu() -> None:
     n = 1
     print("Current log bundle file(s) in the /source folder :\n")
     if len(list_of_files_in_source_dir) == 0:
-        print("/!\ The /source_files folder is currently empty !\n")
+        print("! The /source_files folder is currently empty !\n")
         input("Press Enter to continue ...")
         main_menu()
     else:
@@ -65,17 +66,17 @@ def extract_menu() -> None:
     print()
     print(f"{n} - Back to main menu\n")
     try:
-        answer = int(input("Which file to extract ? = "))
-        if answer == len(list_of_files_in_source_dir)+1:
+        answer_extract_file = int(input("Which file to extract ? = "))
+        if answer_extract_file == len(list_of_files_in_source_dir)+1:
             main_menu()        
-        if answer > len(list_of_files_in_source_dir):
+        if answer_extract_file > len(list_of_files_in_source_dir):
             invalid_input()
             extract_menu()
-        if answer <= 0:
+        if answer_extract_file <= 0:
             invalid_input()
             extract_menu()
         else:
-            file_index = answer - 1
+            file_index = answer_extract_file - 1
             full_extract = False
             print()
             print("Do you want to perform a full extract ? (WARNING : this will consume a lot of space on your drive !)")
@@ -91,6 +92,7 @@ def extract_menu() -> None:
                         break
                     case _:
                         invalid_input()
+                        extract_menu()
             if extract_initial_archive(file_to_extract=list_of_files_in_source_dir[file_index], 
                                     extraction_dir_path=extraction_dir, full_extract=full_extract):
                 print()
@@ -119,20 +121,20 @@ def search_menu(verbose_mode: bool) -> None:
     print()
     print(f"{n} - Back to main menu\n")
     try:
-        ans = int(input("Your choice ? = "))
-        if ans == len(extracted_folder)+1:
+        answer_bundle_choice = int(input("Your choice ? = "))
+        if answer_bundle_choice == len(extracted_folder)+1:
             main_menu()        
-        if ans > len(extracted_folder):
+        if answer_bundle_choice > len(extracted_folder):
             invalid_input()
-            search_menu()
-        if ans <= 0:
+            search_menu(verbose_mode=verbose_mode)
+        if answer_bundle_choice <= 0:
             invalid_input()
-            search_menu()
+            search_menu(verbose_mode=verbose_mode)
         else:
-            file_index = ans - 1
+            file_index = answer_bundle_choice - 1
     except ValueError as e:
         invalid_input()
-        search_menu()
+        search_menu(verbose_mode=verbose_mode)
     search_type = check_bundle_type_and_return_log_path(directory_to_check=extracted_folder[file_index])
     search_path = build_var_log_location_and_return_path(directory=extracted_folder[file_index], bundle_type=search_type)
     chosen_search = search_menu2(bundle_type=search_type)
@@ -155,29 +157,33 @@ def search_menu(verbose_mode: bool) -> None:
 def search_menu2(bundle_type: str = "") -> list:
     print(f"\nOk, you chose a '{bundle_type}' type bundle...\n")
     while True:
+        cls()
         print("Do you want to perform :")
         print("1 - a generic search (most common hardware and services problems)")
         print("2 - a custom search (using your own searching expressions) ?")
         print("3 - choose another bundle\n")
-        ans = input("Your choice ? = ")
-        match ans:
+        answer_search_type = input("Your choice ? = ")
+        match answer_search_type:
             case "1":
                 if bundle_type == 'esxi':
                     return esxi_generic
                 else:
                     return vcenter_generic
             case "2":
-                custom_expressions_file = choose_custom_expression_set_menu()
+                custom_expressions_file = choose_custom_expression_set_menu(bundle_type=bundle_type)
                 list_from_custom_choice = get_infos_from_txt(custom_expressions_file)
                 return list_from_custom_choice
             case "3":
-                search_menu()
+                search_menu(verbose_mode=verbose_mode)
             case _:
                 invalid_input()
+                search_menu2(bundle_type=bundle_type)
 
 
-def choose_custom_expression_set_menu() -> list:
+def choose_custom_expression_set_menu(bundle_type :str = "") -> list:
+    
     n = 1
+    cls()
     available_custom_files = ls_and_return_files_abs_format(directory=os.path.join(os.getcwd(), custom_dir))
     if len(available_custom_files) == 0:
         cls()
@@ -189,19 +195,21 @@ def choose_custom_expression_set_menu() -> list:
         print(f"{n} - {c}")
         n += 1
     print()
-    print(f"{n} - Back to previous menu\n")
+    print(f"{n} - Back to search menu\n")
     try:
-        ans = int(input("Your choice ? = "))
-        if ans == len(available_custom_files)+1:
-            search_menu2()
-        if ans > len(available_custom_files)+1:
+        answer_custom_list = int(input("Your choice ? = "))
+        if answer_custom_list == len(available_custom_files)+1:
+            search_menu(verbose_mode=verbose_mode)
+        if answer_custom_list > len(available_custom_files)+1:
             invalid_input()
-            choose_custom_expression_set_menu()
-        if ans <= 0:
+            choose_custom_expression_set_menu(bundle_type=bundle_type)
+        if answer_custom_list <= 0:
             invalid_input()
-            choose_custom_expression_set_menu()
+            choose_custom_expression_set_menu(bundle_type=bundle_type)
         else:
-            file_index = ans - 1
+            file_index = answer_custom_list - 1
+            return available_custom_files[file_index]
     except ValueError as e:
         invalid_input()
-    return available_custom_files[file_index]
+        choose_custom_expression_set_menu(bundle_type=bundle_type)
+    
