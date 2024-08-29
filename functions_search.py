@@ -36,7 +36,7 @@ def find_in_one_compressed_file(file_name: str, expression: str) -> list:
         # print(f"Non-decodable content (probably raw binary) in this archive file : {file_name}")
         pass # Placeholder : if I need to perform something with this exception
     except EOFError as e:
-        pass
+        pass # Placeholder : if I need to perform something with this exception
     except Exception as e:
         print(type(e).__name__)
         print(file_name, " : ", e)

@@ -138,20 +138,27 @@ def search_menu(verbose_mode: bool) -> None:
     search_type = check_bundle_type_and_return_log_path(directory_to_check=extracted_folder[file_index])
     search_path = build_var_log_location_and_return_path(directory=extracted_folder[file_index], bundle_type=search_type)
     chosen_search = search_menu2(bundle_type=search_type)
-    search_results = search_expression_in_files(root_directory=search_path, 
-                                                expressions_to_search=chosen_search, 
-                                                verbose_mode=verbose_mode)
-    reports_dir_location = get_one_directory_absolute_path(directory_name=reports_dir)
-    try:
-        json_file = export_dict_to_json(dict_to_export=search_results,
-                            base_folder=extracted_folder[file_index],
-                            save_location=reports_dir_location)
-        print("\nSearch results successfully exported as :", json_file)
-        input("\nPress Enter to continue ...")
-    except Exception as e:
-        print("Error while generating the JSON export :", e)
+    if len(chosen_search) == 0:
+        cls()
+        print("The expression list is empty.")
+        print("No action performed.\n")
         input("Press Enter to continue ...")
-    main_menu()
+        main_menu()
+    else:
+        search_results = search_expression_in_files(root_directory=search_path, 
+                                                    expressions_to_search=chosen_search, 
+                                                    verbose_mode=verbose_mode)
+        reports_dir_location = get_one_directory_absolute_path(directory_name=reports_dir)
+        try:
+            json_file = export_dict_to_json(dict_to_export=search_results,
+                                base_folder=extracted_folder[file_index],
+                                save_location=reports_dir_location)
+            print("\nSearch results successfully exported as :", json_file)
+            input("\nPress Enter to continue ...")
+        except Exception as e:
+            print("Error while generating the JSON export :", e)
+            input("Press Enter to continue ...")
+        main_menu()
 
 
 def search_menu2(bundle_type: str = "") -> list:

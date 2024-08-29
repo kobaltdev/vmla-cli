@@ -17,4 +17,5 @@ esxi_generic = ["shutdown",
                 "esx.problem",
                 ]
 
-vcenter_generic = ["Destroy VM called"]
+# vcenter_generic = ["Destroy VM called"]
+vcenter_generic = []
