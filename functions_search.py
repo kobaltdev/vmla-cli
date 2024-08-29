@@ -55,15 +55,17 @@ def search_expression_in_files(root_directory: str, expressions_to_search: list,
         for root, dirs, files in os.walk(root_directory):
             for f in files:
                 filename, file_extension = os.path.splitext(f)
-                if verbose_mode == True:
-                    print(f"Analyzing : {filename}")
                 if file_extension == ".log" or file_extension == ".txt":
+                    if verbose_mode == True:
+                        print(f"Analyzing : {filename}")
                     current_file_name = os.path.join(root, f)
                     plain_file_occurences = find_in_one_plain_file(file_name=current_file_name, expression=e)
                     if len(plain_file_occurences) > 0:
                         results_all_files[f] = plain_file_occurences
 
                 elif file_extension == ".gz":
+                    if verbose_mode == True:
+                        print(f"Analyzing : {filename}")
                     current_file_name = os.path.join(root, f)
                     gz_occurrences = find_in_one_compressed_file(file_name=current_file_name, expression=e)
                     if len(gz_occurrences) > 0:
