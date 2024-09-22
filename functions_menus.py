@@ -1,3 +1,9 @@
+"""
+This contains all the functions used to display menus.
+"""
+
+
+# IMPORTS
 from functions_extract import *
 from functions_tools import *
 from functions_search import *
@@ -136,7 +142,7 @@ def search_menu(verbose_mode: bool) -> None:
         invalid_input()
         search_menu(verbose_mode=verbose_mode)
     search_type = check_bundle_type_and_return_log_path(directory_to_check=extracted_folder[file_index])
-    search_path = build_var_log_location_and_return_path(directory=extracted_folder[file_index], bundle_type=search_type)
+    search_path = build_var_log_path_and_return_it(directory=extracted_folder[file_index], bundle_type=search_type)
     chosen_search = search_menu2(bundle_type=search_type)
     if len(chosen_search) == 0:
         cls()
@@ -188,7 +194,6 @@ def search_menu2(bundle_type: str = "") -> list:
 
 
 def choose_custom_expression_set_menu(bundle_type :str = "") -> list:
-    
     n = 1
     cls()
     available_custom_files = ls_and_return_files_abs_format(directory=os.path.join(os.getcwd(), custom_dir))

@@ -1,8 +1,17 @@
+"""
+Contains all the searching functions.
+"""
+
+# IMPORTS
 from env_and_queries import *
 from functions_tools import *
 import os
 import gzip
 
+"""
+These 2 functions are used to find an expression in a file, wether it's compressed or plain.
+Both returns a list of occurrences.
+"""
 
 def find_in_one_plain_file(file_name: str, expression: str) -> list:
     occurences = []
@@ -15,7 +24,7 @@ def find_in_one_plain_file(file_name: str, expression: str) -> list:
                     occurences.append(line)
         except UnicodeDecodeError as e:
         # print(f"Non-decodable content (probably raw binary) in this archive file : {file_name}")
-            pass # Placeholder : if I need to perform something with this exception
+            pass # Placeholder : if I need to perform something with this exception later
         except Exception as e:
             print(type(e).__name__)
             print(e)
@@ -42,6 +51,26 @@ def find_in_one_compressed_file(file_name: str, expression: str) -> list:
         print(file_name, " : ", e)
     return occurences
 
+
+"""
+This function is the main dict builder based on the occurences returned by the indidual file searching functions.
+It returns a dictionnary containing a nested dictionnary of occurrences, following this hierarchy :
+> { expression1 : {
+                    file1 found containing expression1 : [List of occurrences in the said file]
+                    file2 found containing expression1 : [List of occurrences in the said file]
+                    ....
+                  }
+    expression2 : {
+                    file1 found containing expression2 : [List of occurrences in the said file]
+                    file2 found containing expression2 : [List of occurrences in the said file]
+                    ....
+    }                 
+    expression 3 
+    ....
+}   
+
+This dict is then exported as a .json file (see export_dict_to_json() in functions_tools.py)
+"""
 
 def search_expression_in_files(root_directory: str, expressions_to_search: list, verbose_mode = False) -> dict:
     cls()

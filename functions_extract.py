@@ -1,3 +1,8 @@
+"""
+Contains all the functions needed to extract the bundled archives.
+"""
+
+# IMPORTS
 import os, shutil, tarfile
 from zipfile import ZipFile
 from fnmatch import fnmatch
@@ -6,6 +11,49 @@ import gzip
 from functions_tools import *
 
 
+"""
+This function extract the initial log bundle archive, as downloaded from the vsphere GUI.
+"""
+
+def extract_initial_archive(file_to_extract: str, extraction_dir_path: str, full_extract = False) -> bool:
+    print()
+    print("Trying to extract :", file_to_extract)
+    try:
+        tgz_file = unzip_one_file(file_to_extract, extraction_dir_path, keep_original_file="yes")
+        print("In progress ..")
+        tgz_root_folder_name = get_tar_archive_folder_root_name(tgz_file)
+        untar_one_file(tgz_file, extraction_dir_path, keep_original_file="yes")
+        extracted_archive_dir_path = os.path.join(os.getcwd(), extraction_dir_path, tgz_root_folder_name)
+        delete_files_by_type(directory=extraction_dir_path, file_extension=".tgz")
+        if full_extract == True:
+            parse_all_subdirs_and_extract(directory=extracted_archive_dir_path, keep_original_file="no")
+        return True
+    except Exception as e:
+        print(e)
+
+
+
+"""
+Directory and subdirs parser.
+Checks if the current file matches with extensions_to_extract content.
+Starts the related extracting function depending on the file extension.
+"""
+def parse_all_subdirs_and_extract(directory: str, keep_original_file = "yes") -> None:
+    extensions_to_extract = ["*.gz", "*.tar", "*.zip"]
+
+    for path, subdirs, files in os.walk(directory):
+        for name in files:
+            if fnmatch(name, extensions_to_extract[0]):
+                ungzip_one_file((os.path.join(path, name)), keep_original_file=keep_original_file)
+            if fnmatch(name, extensions_to_extract[1]):
+                untar_one_file((os.path.join(path, name)), target_dir=path, keep_original_file=keep_original_file)
+            if fnmatch(name, extensions_to_extract[2]):
+                unzip_one_file((os.path.join(path, name)), target_dir=path, keep_original_file=keep_original_file)
+
+
+"""
+These functions are related to archive extraction
+"""
 def unzip_one_file(zipfile_to_extract: str, target_dir = ".", keep_original_file = "yes") -> str:
     try:
         with ZipFile(zipfile_to_extract, 'r') as f:
@@ -54,32 +102,4 @@ def ungzip_one_file(gzipfile_to_extract: str, keep_original_file = "yes") -> Non
         print("Error :", e)
 
 
-def parse_all_subdirs_and_extract(directory: str, keep_original_file = "yes") -> None:
-    extensions_to_extract = ["*.gz", "*.tar", "*.zip"]
-
-    for path, subdirs, files in os.walk(directory):
-        for name in files:
-            if fnmatch(name, extensions_to_extract[0]):
-                ungzip_one_file((os.path.join(path, name)), keep_original_file=keep_original_file)
-            if fnmatch(name, extensions_to_extract[1]):
-                untar_one_file((os.path.join(path, name)), target_dir=path, keep_original_file=keep_original_file)
-            if fnmatch(name, extensions_to_extract[2]):
-                unzip_one_file((os.path.join(path, name)), target_dir=path, keep_original_file=keep_original_file)
-
-
-def extract_initial_archive(file_to_extract: str, extraction_dir_path: str, full_extract = False) -> bool:
-    print()
-    print("Trying to extract :", file_to_extract)
-    try:
-        tgz_file = unzip_one_file(file_to_extract, extraction_dir_path, keep_original_file="yes")
-        print("In progress ..")
-        tgz_root_folder_name = get_tar_archive_folder_root_name(tgz_file)
-        untar_one_file(tgz_file, extraction_dir_path, keep_original_file="yes")
-        extracted_archive_dir_path = os.path.join(os.getcwd(), extraction_dir_path, tgz_root_folder_name)
-        delete_files_by_type(directory=extraction_dir_path, file_extension=".tgz")
-        if full_extract == True:
-            parse_all_subdirs_and_extract(directory=extracted_archive_dir_path, keep_original_file="no")
-        return True
-    except Exception as e:
-        print(e)
 

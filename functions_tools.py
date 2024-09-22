@@ -1,19 +1,24 @@
-from env_and_queries import *
+"""
+This contains all the functions used in the main extracting / searching functions
+"""
 
-from datetime import datetime
-
+# IMPORTS
 import os
 import shutil
 import time
 import stat
 import json
 
+from env_and_queries import *
+from datetime import datetime
 
 
-def cls():
+# OS agnostic Clear screen function
+def cls() -> None:
     os.system('cls' if os.name=='nt' else 'clear')
 
 
+# Fixes the write permissions, especially on windows
 def fix_perm(directory_to_fix: str):
     for root, dirs, files in os.walk(directory_to_fix):
         for d in dirs:
@@ -24,6 +29,7 @@ def fix_perm(directory_to_fix: str):
             os.chmod(os.path.join(root, f), stat.S_IWUSR)
 
 
+# To remove a directory
 def rm_directory(dir_to_empty: str, first_try: bool):
     path = os.path.dirname(__file__)
     dir_to_rm = os.path.join(path, dir_to_empty)
@@ -99,7 +105,7 @@ def check_bundle_type_and_return_log_path(directory_to_check: str) -> str:
         return "vcenter"
 
 
-def build_var_log_location_and_return_path(directory: str, bundle_type: str) -> str:
+def build_var_log_path_and_return_it(directory: str, bundle_type: str) -> str:
     bundle_relative_path = f"{extraction_dir}/{directory}"
     full_dir_path = get_one_directory_absolute_path(bundle_relative_path)
     if bundle_type == "esxi":
@@ -135,6 +141,7 @@ def get_infos_from_txt(txt_file: str) -> list:
     return custom_expressions
 
 
+# Generic invalid input handling
 def invalid_input():
     print("Please enter a valid input !")
     time.sleep(1)

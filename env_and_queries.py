@@ -1,3 +1,7 @@
+"""
+Contains the default environment variables and the generic expressions for esxi / vcenter
+"""
+
 # WORKING DIRS
 source_dir = "source_files"
 extraction_dir = "extracted_files"
@@ -7,7 +11,7 @@ custom_dir = "custom_searches"
 # SETTINGS
 verbose_mode = False
 
-# GENEREIC SEARCH EXPRESSIONS
+# GENERIC SEARCH EXPRESSIONS
 esxi_generic = ["shutdown",
                 "Host has booted",
                 "Host is rebooting",
@@ -17,5 +21,4 @@ esxi_generic = ["shutdown",
                 "esx.problem",
                 ]
 
-# vcenter_generic = ["Destroy VM called"]
 vcenter_generic = []
