@@ -21,4 +21,5 @@ esxi_generic = ["shutdown",
                 "esx.problem",
                 ]
 
-vcenter_generic = []
+vcenter_generic = ["No Space left on device",
+                   "Too many outstanding operations"]
